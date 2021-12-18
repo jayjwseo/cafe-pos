@@ -3,14 +3,7 @@ import React, { Fragment, useState } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import styled from "styled-components";
 
-import {
-  Button,
-  ButtonGroup,
-  Box,
-  Card,
-  CardContent,
-  Typography,
-} from "@mui/material";
+import { Button, ButtonGroup, Box, Card, CardContent } from "@mui/material";
 
 const hotDrinks = [
   {
@@ -43,8 +36,8 @@ const cashTypes = [
   { label: "$ 20", amount: 20 },
   { label: "$ 10", amount: 10 },
   { label: "$ 5", amount: 5 },
-  { label: "$ 3.5 Coupon", amount: 3.5 },
-  { label: "$ 2.5 Coupon", amount: 2.5 },
+  { label: "$ 3.5 CP", amount: 3.5 },
+  { label: "$ 2.5 CP", amount: 2.5 },
   { label: "$ 1", amount: 1 },
   { label: "$ 0.5", amount: 0.5 },
   { label: "$ 0.2", amount: 0.2 },
@@ -82,35 +75,35 @@ const productRow = (product) => {
         justifyContent: "space-between",
       }}
     >
-      <div
+      <__ItemText
         style={{
           width: "50%",
-          paddingLeft: "1rem",
+          paddingLeft: "1.5rem",
           borderBottom: "1px solid #2e3237",
           borderRight: "1px solid #2e3237",
         }}
       >
-        32fsdffdsfdsf
-      </div>
-      <div
+        2
+      </__ItemText>
+      <__ItemText
         style={{
           width: "100%",
-          paddingLeft: "1rem",
+          paddingLeft: "1.5rem",
           borderBottom: "1px solid #2e3237",
           borderRight: "1px solid #2e3237",
         }}
       >
-        32
-      </div>
-      <div
+        Americano
+      </__ItemText>
+      <__ItemText
         style={{
           width: "50%",
-          paddingLeft: "1rem",
+          paddingLeft: "1.5rem",
           borderBottom: "1px solid #2e3237",
         }}
       >
         32
-      </div>
+      </__ItemText>
     </div>
   );
 };
@@ -119,7 +112,7 @@ function App() {
   return (
     <Fragment>
       <CssBaseline />
-      <__Container style={{ marginTop: "3rem" }}>
+      <__Container style={{ overflow: "hidden" }}>
         <__Card>
           <__CardContent>
             <__Box>
@@ -147,7 +140,7 @@ function App() {
               </__Box>
             </__CardContent>
           </__Card>
-          <__Card style={{ marginTop: "0", marginLeft: "0", flexGrow: "2" }}>
+          <__Card style={{ marginTop: "0", marginLeft: "0", flexGrow: "10" }}>
             <__CardContent
               style={{
                 height: "100%",
@@ -165,11 +158,15 @@ function App() {
                     justifyContent: "space-between",
                   }}
                 >
-                  <div style={{ width: "50%", paddingLeft: "1rem" }}>Qty</div>
-                  <div style={{ width: "100%", paddingLeft: "1rem" }}>Item</div>
-                  <div style={{ width: "50%", paddingLeft: "1rem" }}>
+                  <__ItemText style={{ width: "50%", paddingLeft: "1rem" }}>
+                    Qty
+                  </__ItemText>
+                  <__ItemText style={{ width: "100%", paddingLeft: "1rem" }}>
+                    Item
+                  </__ItemText>
+                  <__ItemText style={{ width: "50%", paddingLeft: "1rem" }}>
                     Price ($)
-                  </div>
+                  </__ItemText>
                 </div>
                 {productRow()}
                 {productRow()}
@@ -250,7 +247,7 @@ const __ButtonGroup = styled(ButtonGroup)`
 `;
 
 const __ButtonWrapper = styled.div`
-  margin: 0.3rem;
+  margin: 0.2rem;
 `;
 
 const __MenuButton = styled(Button)`
@@ -258,11 +255,16 @@ const __MenuButton = styled(Button)`
   width: 100%;
   height: 45px;
   border: 1px solid #2e3237 !important;
-  background-color: transparent !important;
+  background-image: linear-gradient(
+    to right,
+    #fff3e0 0%,
+    #fff3e0 80%,
+    #ffefd6 100%
+  ) !important;
 
   > div {
     color: #2e3237;
-    font-size: 20px;
+    font-size: 1.5rem;
     font-weight: 600;
     width: 100%;
     display: flex;
@@ -275,4 +277,8 @@ const __Box = styled(Box)`
   justify-content: space-around;
   flex-flow: row wrap;
   align-items: stretch;
+`;
+
+const __ItemText = styled.div`
+  font-size: 1.5rem;
 `;
