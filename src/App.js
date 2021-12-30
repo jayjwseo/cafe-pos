@@ -5,49 +5,147 @@ import styled from "styled-components";
 
 import { Button, ButtonGroup, Box, Card, CardContent } from "@mui/material";
 
-const hotDrinks = [
+const menuItems = [
   {
+    id: "hd1",
+    type: "hot",
     name: "Latte",
     value: "latte",
-    price: 2.5,
+    price: "2.5",
   },
-  { name: "Cappuccino", value: "cappuccino", price: "2.5" },
-  { name: "Long Black", value: "longBlack", price: "2.5" },
-  { name: "Short Black", value: "shortBlack", price: "2.5" },
-  { name: "Flat White", value: "flatWhite", price: "2.5" },
-  { name: "Mocha", value: "mocha", price: "3.5" },
-  { name: "Hot Chocolate", value: "hotChocolate", price: "3.0" },
-  { name: "Tea", value: "tea", price: "2.5" },
-];
-
-const coldDrinks = [
-  { name: "Iced Latte", value: "icedLatte", price: "4.0" },
-  { name: "Iced Americano", value: "icedAmericano", price: "4.0" },
-  { name: "Iced Blue", value: "icedBlue", price: "3.5" },
-  { name: "Iced Mango", value: "icedMango", price: "3.5" },
-  { name: "Iced Watermelon", value: "icedWatermelon", price: "3.5" },
-  { name: "Iced Peach", value: "icedPeach", price: "3.5" },
-  { name: "Iced Chocolate", value: "icedChocolate", price: "3.5" },
-  { name: "Iced Mocha", value: "icedMocha", price: "4.5" },
+  {
+    id: "hd2",
+    type: "hot",
+    name: "Cappuccino",
+    value: "cappuccino",
+    price: "2.5",
+  },
+  {
+    id: "hd3",
+    type: "hot",
+    name: "Long Black",
+    value: "longBlack",
+    price: "2.5",
+  },
+  {
+    id: "hd4",
+    type: "hot",
+    name: "Short Black",
+    value: "shortBlack",
+    price: "2.5",
+  },
+  {
+    id: "hd5",
+    type: "hot",
+    name: "Flat White",
+    value: "flatWhite",
+    price: "2.5",
+  },
+  { id: "hd6", type: "hot", name: "Mocha", value: "mocha", price: "3.5" },
+  {
+    id: "hd7",
+    type: "hot",
+    name: "Hot Chocolate",
+    value: "hotChocolate",
+    price: "3.0",
+  },
+  { id: "hd8", type: "hot", name: "Tea", value: "tea", price: "2.5" },
+  {
+    id: "cd1",
+    type: "cold",
+    name: "Iced Latte",
+    value: "icedLatte",
+    price: "4.0",
+  },
+  {
+    id: "cd2",
+    type: "cold",
+    name: "Iced Americano",
+    value: "icedAmericano",
+    price: "4.0",
+  },
+  {
+    id: "cd3",
+    type: "cold",
+    name: "Iced Blue",
+    value: "icedBlue",
+    price: "3.5",
+  },
+  {
+    id: "cd4",
+    type: "cold",
+    name: "Iced Mango",
+    value: "icedMango",
+    price: "3.5",
+  },
+  {
+    id: "cd5",
+    type: "cold",
+    name: "Iced Watermelon",
+    value: "icedWatermelon",
+    price: "3.5",
+  },
+  {
+    id: "cd6",
+    type: "cold",
+    name: "Iced Peach",
+    value: "icedPeach",
+    price: "3.5",
+  },
+  {
+    id: "cd7",
+    type: "cold",
+    name: "Iced Chocolate",
+    value: "icedChocolate",
+    price: "3.5",
+  },
+  {
+    id: "cd8",
+    type: "cold",
+    name: "Iced Mocha",
+    value: "icedMocha",
+    price: "4.5",
+  },
+  {
+    id: "other1",
+    type: "other",
+    name: "Extra",
+    value: "icedMocha",
+    price: "0.5",
+  },
+  {
+    id: "other2",
+    type: "other",
+    name: "CP25",
+    value: "icedMocha",
+    price: "25.0",
+  },
+  {
+    id: "other3",
+    type: "other",
+    name: "CP35",
+    value: "icedMocha",
+    price: "35.0",
+  },
 ];
 
 const cashTypes = [
+  { label: "$ 100", amount: 100 },
   { label: "$ 50", amount: 50 },
   { label: "$ 20", amount: 20 },
   { label: "$ 10", amount: 10 },
   { label: "$ 5", amount: 5 },
-  { label: "$ 3.5 CP", amount: 3.5 },
-  { label: "$ 2.5 CP", amount: 2.5 },
   { label: "$ 1", amount: 1 },
   { label: "$ 0.5", amount: 0.5 },
   { label: "$ 0.2", amount: 0.2 },
-  { label: "$ 0.1", amount: 0.1 },
+  { label: "$ 3.5 CP", amount: 3.5 },
+  { label: "$ 2.5 CP", amount: 2.5 },
 ];
 
 const menuButton = (menu) => {
   return (
     <__ButtonWrapper>
-      <__MenuButton type="button" value={menu.value} key={menu.value}>
+      <__MenuButton type="button" value={menu.is} key={menu.id}>
         <div>
           <span>{menu.name}</span>
           <span>{menu.price}</span>
@@ -60,7 +158,12 @@ const menuButton = (menu) => {
 const cashButton = (cashType) => {
   return (
     <__ButtonWrapper>
-      <__MenuButton type="button" value={cashType.amount} key={cashType.label}>
+      <__MenuButton
+        type="button"
+        value={cashType.amount}
+        key={cashType.label}
+        $bColor="#e0e0e0"
+      >
         <div>{cashType.label}</div>
       </__MenuButton>
     </__ButtonWrapper>
@@ -88,7 +191,7 @@ const productRow = (product) => {
       <__ItemText
         style={{
           width: "100%",
-          paddingLeft: "1.5rem",
+          paddingLeft: "1rem",
           borderBottom: "1px solid #2e3237",
           borderRight: "1px solid #2e3237",
         }}
@@ -98,7 +201,7 @@ const productRow = (product) => {
       <__ItemText
         style={{
           width: "50%",
-          paddingLeft: "1.5rem",
+          paddingLeft: "1rem",
           borderBottom: "1px solid #2e3237",
         }}
       >
@@ -109,6 +212,9 @@ const productRow = (product) => {
 };
 
 function App() {
+  const [order, setOrder] = useState([]);
+  const [paid, setPaid] = useState(0);
+
   return (
     <Fragment>
       <CssBaseline />
@@ -117,16 +223,20 @@ function App() {
           <__CardContent>
             <__Box>
               <__ButtonGroup orientation="vertical">
-                {hotDrinks.map((hotDrink) => menuButton(hotDrink))}
+                {menuItems
+                  .filter((i) => i.type === "hot")
+                  .map((hotDrink) => menuButton(hotDrink))}
               </__ButtonGroup>
               <__ButtonGroup orientation="vertical">
-                {coldDrinks.map((coldDrink) => menuButton(coldDrink))}
-                {menuButton({
-                  name: "Extra Shot",
-                  value: "extraShot",
-                  price: "0.5",
-                })}
+                {menuItems
+                  .filter((i) => i.type === "cold")
+                  .map((coldDrink) => menuButton(coldDrink))}
               </__ButtonGroup>
+              <div style={{ display: "flex", width: "100%" }}>
+                {menuItems
+                  .filter((i) => i.type === "other")
+                  .map((other) => menuButton(other))}
+              </div>
             </__Box>
           </__CardContent>
         </__Card>
@@ -164,7 +274,7 @@ function App() {
                   <__ItemText style={{ width: "100%", paddingLeft: "1rem" }}>
                     Item
                   </__ItemText>
-                  <__ItemText style={{ width: "50%", paddingLeft: "1rem" }}>
+                  <__ItemText style={{ width: "50%", paddingLeft: "1.5rem" }}>
                     Price ($)
                   </__ItemText>
                 </div>
@@ -178,27 +288,30 @@ function App() {
                   justifyContent: "space-between",
                 }}
               >
-                <div
+                <__ItemText
                   style={{
-                    width: "100px",
+                    width: "25%",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
+                    background: "#e57373",
+                    color: "#fff",
+                    fontWeight: "600",
                   }}
                 >
                   TOTAL
-                </div>
-                <div
+                </__ItemText>
+                <__ItemText
                   style={{
-                    width: "35%",
+                    width: "25%",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                   }}
                 >
                   hello
-                </div>
-                <div
+                </__ItemText>
+                <__ItemText
                   style={{
                     width: "25%",
                     display: "flex",
@@ -207,8 +320,8 @@ function App() {
                   }}
                 >
                   Paid
-                </div>
-                <div
+                </__ItemText>
+                <__ItemText
                   style={{
                     width: "25%",
                     display: "flex",
@@ -217,11 +330,41 @@ function App() {
                   }}
                 >
                   Change
-                </div>
+                </__ItemText>
               </div>
             </__CardContent>
           </__Card>
         </div>
+        <__Card style={{ marginTop: "0" }}>
+          <__CardContent style={{ display: "flex" }}>
+            <__ButtonWrapper
+              style={{ flexGrow: "1", justifyContent: "center" }}
+            >
+              <__MenuButton type="button" $bColor="#2e3237">
+                <div style={{ justifyContent: "center", color: "#fff" }}>
+                  Logs
+                </div>
+              </__MenuButton>
+            </__ButtonWrapper>
+            <__ButtonWrapper style={{ flexGrow: "1" }}>
+              <__MenuButton type="button" $bColor="#ffecb3">
+                <div style={{ justifyContent: "center" }}>Clear Order</div>
+              </__MenuButton>
+            </__ButtonWrapper>
+            <__ButtonWrapper style={{ flexGrow: "1" }}>
+              <__MenuButton type="button" $bColor="#ffecb3">
+                <div style={{ justifyContent: "center" }}>Clear Paid</div>
+              </__MenuButton>
+            </__ButtonWrapper>
+            <__ButtonWrapper style={{ flexGrow: "6" }}>
+              <__MenuButton type="button" $bColor="#2e3237">
+                <div style={{ justifyContent: "center", color: "#fff" }}>
+                  Done
+                </div>
+              </__MenuButton>
+            </__ButtonWrapper>
+          </__CardContent>
+        </__Card>
       </__Container>
     </Fragment>
   );
@@ -239,7 +382,8 @@ const __Card = styled(Card)`
 `;
 
 const __CardContent = styled(CardContent)`
-  padding: 1rem !important;
+  padding: 0.5rem !important;
+  background: #efebe9;
 `;
 
 const __ButtonGroup = styled(ButtonGroup)`
@@ -248,6 +392,7 @@ const __ButtonGroup = styled(ButtonGroup)`
 
 const __ButtonWrapper = styled.div`
   margin: 0.2rem;
+  flex-grow: 1;
 `;
 
 const __MenuButton = styled(Button)`
@@ -255,12 +400,8 @@ const __MenuButton = styled(Button)`
   width: 100%;
   height: 45px;
   border: 1px solid #2e3237 !important;
-  background-image: linear-gradient(
-    to right,
-    #fff3e0 0%,
-    #fff3e0 80%,
-    #ffefd6 100%
-  ) !important;
+  background-color: ${(p) =>
+    p.$bColor ? `${p.$bColor} !important` : "#d7ccc8 !important"};
 
   > div {
     color: #2e3237;
