@@ -116,15 +116,15 @@ const menuItems = [
   {
     id: "other2",
     type: "other",
-    name: "CP25",
-    value: "icedMocha",
+    name: "Coupon 25",
+    value: "cp25",
     price: "25.0",
   },
   {
     id: "other3",
     type: "other",
-    name: "CP35",
-    value: "icedMocha",
+    name: "Coupon 35",
+    value: "cp35",
     price: "35.0",
   },
 ];
@@ -138,8 +138,8 @@ const cashTypes = [
   { label: "$ 1", amount: 1 },
   { label: "$ 0.5", amount: 0.5 },
   { label: "$ 0.2", amount: 0.2 },
-  { label: "$ 3.5 CP", amount: 3.5 },
-  { label: "$ 2.5 CP", amount: 2.5 },
+  { label: "$ 3.5 Coupon", amount: 3.5 },
+  { label: "$ 2.5 Coupon", amount: 2.5 },
 ];
 
 const menuButton = (menu) => {
@@ -162,7 +162,7 @@ const cashButton = (cashType) => {
         type="button"
         value={cashType.amount}
         key={cashType.label}
-        $bColor="#e0e0e0"
+        $bColor="#E0E0E0"
       >
         <div>{cashType.label}</div>
       </__MenuButton>
@@ -288,49 +288,74 @@ function App() {
                   justifyContent: "space-between",
                 }}
               >
-                <__ItemText
-                  style={{
-                    width: "25%",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    background: "#e57373",
-                    color: "#fff",
-                    fontWeight: "600",
-                  }}
-                >
-                  TOTAL
-                </__ItemText>
-                <__ItemText
-                  style={{
-                    width: "25%",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  hello
-                </__ItemText>
-                <__ItemText
-                  style={{
-                    width: "25%",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  Paid
-                </__ItemText>
-                <__ItemText
-                  style={{
-                    width: "25%",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  Change
-                </__ItemText>
+                <__TotalBox>
+                  <__TotalInnerBox
+                    style={{
+                      background: "#9c9c9c",
+                      color: "#fff",
+                    }}
+                  >
+                    Qty
+                  </__TotalInnerBox>
+                  <__TotalInnerBox
+                    style={{
+                      color: "#9c9c9c",
+                    }}
+                  >
+                    6534
+                  </__TotalInnerBox>
+                </__TotalBox>
+                <__TotalBox>
+                  <__TotalInnerBox
+                    style={{
+                      background: "#ed7777",
+                      color: "#fff",
+                    }}
+                  >
+                    Total
+                  </__TotalInnerBox>
+                  <__TotalInnerBox
+                    style={{
+                      color: "#ed7777",
+                    }}
+                  >
+                    6534
+                  </__TotalInnerBox>
+                </__TotalBox>
+                <__TotalBox>
+                  <__TotalInnerBox
+                    style={{
+                      background: "#00BFA5",
+                      color: "#fff",
+                    }}
+                  >
+                    Paid
+                  </__TotalInnerBox>
+                  <__TotalInnerBox
+                    style={{
+                      color: "#00BFA5",
+                    }}
+                  >
+                    543
+                  </__TotalInnerBox>
+                </__TotalBox>
+                <__TotalBox>
+                  <__TotalInnerBox
+                    style={{
+                      background: "#607D8B",
+                      color: "#fff",
+                    }}
+                  >
+                    Change
+                  </__TotalInnerBox>
+                  <__TotalInnerBox
+                    style={{
+                      color: "#607D8B",
+                    }}
+                  >
+                    543
+                  </__TotalInnerBox>
+                </__TotalBox>
               </div>
             </__CardContent>
           </__Card>
@@ -340,24 +365,24 @@ function App() {
             <__ButtonWrapper
               style={{ flexGrow: "1", justifyContent: "center" }}
             >
-              <__MenuButton type="button" $bColor="#2e3237">
+              <__MenuButton type="button" $bColor="#323232">
                 <div style={{ justifyContent: "center", color: "#fff" }}>
                   Logs
                 </div>
               </__MenuButton>
             </__ButtonWrapper>
             <__ButtonWrapper style={{ flexGrow: "1" }}>
-              <__MenuButton type="button" $bColor="#ffecb3">
+              <__MenuButton type="button" $bColor="#FEE6D3">
                 <div style={{ justifyContent: "center" }}>Clear Order</div>
               </__MenuButton>
             </__ButtonWrapper>
             <__ButtonWrapper style={{ flexGrow: "1" }}>
-              <__MenuButton type="button" $bColor="#ffecb3">
+              <__MenuButton type="button" $bColor="#FEE6D3">
                 <div style={{ justifyContent: "center" }}>Clear Paid</div>
               </__MenuButton>
             </__ButtonWrapper>
             <__ButtonWrapper style={{ flexGrow: "6" }}>
-              <__MenuButton type="button" $bColor="#2e3237">
+              <__MenuButton type="button" $bColor="#323232">
                 <div style={{ justifyContent: "center", color: "#fff" }}>
                   Done
                 </div>
@@ -383,7 +408,7 @@ const __Card = styled(Card)`
 
 const __CardContent = styled(CardContent)`
   padding: 0.5rem !important;
-  background: #efebe9;
+  background: #fff;
 `;
 
 const __ButtonGroup = styled(ButtonGroup)`
@@ -391,7 +416,7 @@ const __ButtonGroup = styled(ButtonGroup)`
 `;
 
 const __ButtonWrapper = styled.div`
-  margin: 0.2rem;
+  margin: 0.1rem;
   flex-grow: 1;
 `;
 
@@ -399,12 +424,14 @@ const __MenuButton = styled(Button)`
   text-align: left;
   width: 100%;
   height: 45px;
-  border: 1px solid #2e3237 !important;
+  /* border: 1px solid #2e3237 !important; */
+  border: none !important;
+
   background-color: ${(p) =>
-    p.$bColor ? `${p.$bColor} !important` : "#d7ccc8 !important"};
+    p.$bColor ? `${p.$bColor} !important` : "#F2E4CD !important"};
 
   > div {
-    color: #2e3237;
+    color: #323232;
     font-size: 1.5rem;
     font-weight: 600;
     width: 100%;
@@ -422,4 +449,22 @@ const __Box = styled(Box)`
 
 const __ItemText = styled.div`
   font-size: 1.5rem;
+`;
+
+const __TotalBox = styled.div`
+  width: 25%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+`;
+
+const __TotalInnerBox = styled.div`
+  display: flex;
+  font-size: 1.5rem;
+  font-weight: 600;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 50%;
 `;
