@@ -1,1 +1,1 @@
-# Not for profit church cafe point of sale app
+Not for profit church cafe point of sale app
