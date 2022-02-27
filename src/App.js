@@ -365,24 +365,24 @@ function App() {
             <__ButtonWrapper
               style={{ flexGrow: "1", justifyContent: "center" }}
             >
-              <__MenuButton type="button" $bColor="#323232">
+              <__MenuButton type="button" $bColor="#2e3237">
                 <div style={{ justifyContent: "center", color: "#fff" }}>
                   Logs
                 </div>
               </__MenuButton>
             </__ButtonWrapper>
             <__ButtonWrapper style={{ flexGrow: "1" }}>
-              <__MenuButton type="button" $bColor="#FEE6D3">
+              <__MenuButton type="button" $bColor="#ffb74d">
                 <div style={{ justifyContent: "center" }}>Clear Order</div>
               </__MenuButton>
             </__ButtonWrapper>
             <__ButtonWrapper style={{ flexGrow: "1" }}>
-              <__MenuButton type="button" $bColor="#FEE6D3">
+              <__MenuButton type="button" $bColor="#ffb74d">
                 <div style={{ justifyContent: "center" }}>Clear Paid</div>
               </__MenuButton>
             </__ButtonWrapper>
             <__ButtonWrapper style={{ flexGrow: "6" }}>
-              <__MenuButton type="button" $bColor="#323232">
+              <__MenuButton type="button" $bColor="#2e3237">
                 <div style={{ justifyContent: "center", color: "#fff" }}>
                   Done
                 </div>
@@ -428,10 +428,10 @@ const __MenuButton = styled(Button)`
   border: none !important;
 
   background-color: ${(p) =>
-    p.$bColor ? `${p.$bColor} !important` : "#F2E4CD !important"};
+    p.$bColor ? `${p.$bColor} !important` : "#e3f2fd !important"};
 
   > div {
-    color: #323232;
+    color: #2e3237;
     font-size: 1.5rem;
     font-weight: 600;
     width: 100%;
