@@ -142,34 +142,6 @@ const cashTypes = [
   { label: "$ 2.5 Coupon", amount: 2.5 },
 ];
 
-const menuButton = (menu) => {
-  return (
-    <__ButtonWrapper>
-      <__MenuButton type="button" value={menu.is} key={menu.id}>
-        <div>
-          <span>{menu.name}</span>
-          <span>{menu.price}</span>
-        </div>
-      </__MenuButton>
-    </__ButtonWrapper>
-  );
-};
-
-const cashButton = (cashType) => {
-  return (
-    <__ButtonWrapper>
-      <__MenuButton
-        type="button"
-        value={cashType.amount}
-        key={cashType.label}
-        $bColor="#E0E0E0"
-      >
-        <div>{cashType.label}</div>
-      </__MenuButton>
-    </__ButtonWrapper>
-  );
-};
-
 const productRow = (product) => {
   return (
     <div
@@ -214,6 +186,45 @@ const productRow = (product) => {
 function App() {
   const [order, setOrder] = useState([]);
   const [paid, setPaid] = useState(0);
+
+  const menuClickHandler = (e) => {
+    if (!e) {
+      return;
+    }
+  };
+
+  const menuButton = (menu) => {
+    return (
+      <__ButtonWrapper>
+        <__MenuButton
+          type="button"
+          value={menu.value}
+          key={menu.id}
+          onClick={menuClickHandler}
+        >
+          <div>
+            <span>{menu.name}</span>
+            <span>{menu.price}</span>
+          </div>
+        </__MenuButton>
+      </__ButtonWrapper>
+    );
+  };
+
+  const cashButton = (cashType) => {
+    return (
+      <__ButtonWrapper>
+        <__MenuButton
+          type="button"
+          value={cashType.amount}
+          key={cashType.label}
+          $bColor="#E0E0E0"
+        >
+          <div>{cashType.label}</div>
+        </__MenuButton>
+      </__ButtonWrapper>
+    );
+  };
 
   return (
     <Fragment>
@@ -372,12 +383,12 @@ function App() {
               </__MenuButton>
             </__ButtonWrapper>
             <__ButtonWrapper style={{ flexGrow: "1" }}>
-              <__MenuButton type="button" $bColor="#ffb74d">
+              <__MenuButton type="button" $bColor="#f3e5f5">
                 <div style={{ justifyContent: "center" }}>Clear Order</div>
               </__MenuButton>
             </__ButtonWrapper>
             <__ButtonWrapper style={{ flexGrow: "1" }}>
-              <__MenuButton type="button" $bColor="#ffb74d">
+              <__MenuButton type="button" $bColor="#f3e5f5">
                 <div style={{ justifyContent: "center" }}>Clear Paid</div>
               </__MenuButton>
             </__ButtonWrapper>
