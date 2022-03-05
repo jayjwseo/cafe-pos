@@ -64,7 +64,7 @@ const menuItems = [
     price: 3.0,
     qty: 1,
   },
-  { id: "hd8", type: "hot", name: "Tea", value: "tea", price: "2.5", qty: 1 },
+  { id: "hd8", type: "hot", name: "Tea", value: "tea", price: 2.5, qty: 1 },
   {
     id: "cd1",
     type: "cold",
@@ -133,7 +133,7 @@ const menuItems = [
     id: "other1",
     type: "other",
     name: "Extra",
-    value: "icedMocha",
+    value: "extra",
     price: 0.5,
     qty: 1,
   },
@@ -164,6 +164,7 @@ const cashTypes = [
   { label: "$ 1", amount: 1 },
   { label: "$ 0.5", amount: 0.5 },
   { label: "$ 0.2", amount: 0.2 },
+  { label: "$ 0.1", amount: 0.1 },
   { label: "$ 3.5 CP", amount: 3.5 },
   { label: "$ 2.5 CP", amount: 2.5 },
 ];
