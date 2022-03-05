@@ -3,7 +3,8 @@ import React, { Fragment, useState, useEffect } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import styled from "styled-components";
 import { db } from "./firebase-config";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, addDoc } from "firebase/firestore";
+import { format } from "date-fns";
 
 import { Button, ButtonGroup, Box, Card, CardContent } from "@mui/material";
 
@@ -229,6 +230,24 @@ function App() {
     getLogs();
   }, []);
 
+  const todayDate = format(new Date(2014, 1, 11), "yyyy-MM-dd");
+
+  const doneClickHandler = async () => {
+    await addDoc(logsCollectionRef, {
+      order: order,
+      paid: paid,
+      date: todayDate,
+    });
+
+    const data = await getDocs(logsCollectionRef);
+    setLogs(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+
+    setSmallCouponPaidCount(0);
+    setBigCouponPaidCount(0);
+    setPaid([]);
+    setOrder([]);
+  };
+
   const menuClickHandler = (e) => {
     if (!e?.target) {
       return;
@@ -289,17 +308,6 @@ function App() {
     setSmallCouponPaidCount(0);
     setBigCouponPaidCount(0);
     setPaid([]);
-  };
-
-  const doneClickHandler = (e) => {
-    if (!e?.target) {
-      return;
-    }
-
-    setSmallCouponPaidCount(0);
-    setBigCouponPaidCount(0);
-    setPaid([]);
-    setOrder([]);
   };
 
   const totalQty = sumProp(order, "qty");
