@@ -165,9 +165,9 @@ const cashTypes = [
   { label: "$ 1", amount: 1 },
   { label: "$ 0.5", amount: 0.5 },
   { label: "$ 0.2", amount: 0.2 },
-  { label: "$ 0.1", amount: 0.1 },
   { label: "$ 3.5 CP", amount: 3.5 },
   { label: "$ 2.5 CP", amount: 2.5 },
+  { label: "$ 0.5 CP", amount: 0.5 },
 ];
 
 const productRow = (product) => {
@@ -221,6 +221,7 @@ function App() {
   const [bigCouponPaidCount, setBigCouponPaidCount] = useState(0);
   const [logs, setLogs] = useState([]);
   const [isLogsOpen, setIsLogsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const logsCollectionRef = collection(db, "logs");
   useEffect(() => {
@@ -234,26 +235,12 @@ function App() {
 
   const todayDate = format(new Date(2014, 1, 11), "yyyy-MM-dd");
 
-  const doneClickHandler = async () => {
-    await addDoc(logsCollectionRef, {
-      order: order,
-      paid: paid,
-      date: todayDate,
-    });
-
-    const data = await getDocs(logsCollectionRef);
-    setLogs(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-
-    setSmallCouponPaidCount(0);
-    setBigCouponPaidCount(0);
-    setPaid([]);
-    setOrder([]);
-  };
-
   const menuClickHandler = (e) => {
     if (!e?.target) {
       return;
     }
+
+    setIsLoading(false);
 
     const value = e.target.value;
     const menuItem = [menuItems.find((item) => item.value === value)];
@@ -326,7 +313,44 @@ function App() {
 
   const totalPaid = sumProp(paid, "amount").toFixed(1);
 
+  const couponPaid = paid.filter(
+    (type) =>
+      type.label === "$ 3.5 CP" ||
+      type.label === "$ 2.5 CP" ||
+      type.label === "$ 0.5 CP"
+  );
+
+  const totalCouponPaid = sumProp(couponPaid, "amount").toFixed(1);
+
+  const totalCashPaid = (
+    parseFloat(totalPaid) - parseFloat(totalCouponPaid)
+  ).toFixed(1);
+
   const totalChange = Math.max(0, totalPaid - totalPrice).toFixed(1);
+
+  const doneClickHandler = async () => {
+    setIsLoading(true);
+
+    await addDoc(logsCollectionRef, {
+      order: order,
+      paid: paid,
+      date: todayDate,
+      totalQty: parseFloat(totalQty),
+      totalPrice: parseFloat(totalPrice),
+      totalPaid: parseFloat(totalPaid),
+      totalCouponPaid: parseFloat(totalCouponPaid),
+      totalCashPaid: parseFloat(totalCashPaid),
+      totalChange: parseFloat(totalChange),
+    });
+
+    const data = await getDocs(logsCollectionRef);
+    setLogs(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+
+    setSmallCouponPaidCount(0);
+    setBigCouponPaidCount(0);
+    setPaid([]);
+    setOrder([]);
+  };
 
   const menuButton = (menu) => {
     return (
@@ -366,6 +390,12 @@ function App() {
 
   const todayLogs = logs.filter((log) => log.date === todayDate).reverse();
 
+  const todayTotalPrice = sumProp(todayLogs, "totalPrice").toFixed(1);
+  const todayTotalCoupon = sumProp(todayLogs, "totalCouponPaid").toFixed(1);
+  const todayTotalCash = (
+    parseFloat(todayTotalPrice) - parseFloat(todayTotalCoupon)
+  ).toFixed(1);
+
   return (
     <Fragment>
       <CssBaseline />
@@ -398,16 +428,54 @@ function App() {
           </__ButtonWrapper>
 
           <__Card style={{ marginTop: "0", height: "100%", overflow: "auto" }}>
-            <__CardContent style={{ display: "flex", fontSize: "16px" }}>
+            <__CardContent style={{ display: "flex", flexDirection: "column" }}>
+              <div style={{ width: "100%", display: "flex" }}>
+                <__LogItem style={{ fontWeight: "600" }}>Order #:</__LogItem>
+                <__LogItem style={{ fontWeight: "600" }}>Qty</__LogItem>
+                <__LogItem style={{ fontWeight: "600" }}>Total</__LogItem>
+                <__LogItem style={{ fontWeight: "600" }}>Paid</__LogItem>
+                <__LogItem style={{ fontWeight: "600" }}>Cash</__LogItem>
+                <__LogItem style={{ fontWeight: "600" }}>Coupon</__LogItem>
+                <__LogItem style={{ fontWeight: "600" }}>Change</__LogItem>
+              </div>
               {!!todayLogs.length ? (
-                todayLogs.map((log) => (
-                  <div key={log.id}>
-                    {log.id} {console.log(log)}
+                todayLogs.map((log, idx) => (
+                  <div key={log.id} style={{ width: "100%", display: "flex" }}>
+                    <__LogItem>{idx + 1}</__LogItem>
+                    <__LogItem>{log.totalQty}</__LogItem>
+                    <__LogItem>{log.totalPrice}</__LogItem>
+                    <__LogItem>{log.totalPaid}</__LogItem>
+                    <__LogItem>{log.totalCashPaid}</__LogItem>
+                    <__LogItem>{log.totalCouponPaid}</__LogItem>
+                    <__LogItem>{log.totalChange}</__LogItem>
                   </div>
                 ))
               ) : (
-                <div>No sales today :(</div>
+                <div
+                  style={{
+                    textAlign: "center",
+                    marginTop: "3rem",
+                    fontSize: "1.5rem",
+                  }}
+                >
+                  gg no sales today :(
+                </div>
               )}
+            </__CardContent>
+          </__Card>
+          <__Card style={{ marginTop: "0", overflow: "auto" }}>
+            <__CardContent
+              style={{ display: "flex", justifyContent: "space-around" }}
+            >
+              <span style={{ fontSize: "1.5rem", fontWeight: "600" }}>
+                {`Net Sales: $ ${todayTotalPrice}`}
+              </span>
+              <span style={{ fontSize: "1.5rem", fontWeight: "600" }}>
+                {`Coupon Amount: $ ${todayTotalCoupon}`}
+              </span>
+              <span style={{ fontSize: "1.5rem", fontWeight: "600" }}>
+                {`Cash Amount: $ ${todayTotalCash}`}
+              </span>
             </__CardContent>
           </__Card>
         </__Container>
@@ -605,6 +673,7 @@ function App() {
                   type="button"
                   $bColor="#2e3237"
                   onClick={doneClickHandler}
+                  disabled={isLoading || !order.length}
                 >
                   <div
                     style={{
@@ -696,4 +765,11 @@ const __TotalInnerBox = styled.div`
   align-items: center;
   width: 100%;
   height: 50%;
+`;
+
+const __LogItem = styled.span`
+  flex: 1;
+  font-size: 1.2rem;
+  border-bottom: 1px solid #000;
+  padding-left: 1rem;
 `;
