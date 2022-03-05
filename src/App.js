@@ -3,7 +3,13 @@ import React, { Fragment, useState, useEffect } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import styled from "styled-components";
 import { db } from "./firebase-config";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { format } from "date-fns";
 
 import { Button, ButtonGroup, Box, Card, CardContent } from "@mui/material";
@@ -223,7 +229,9 @@ function App() {
   const [isLogsOpen, setIsLogsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const logsCollectionRef = collection(db, "logs");
+  const todayDate = format(new Date(), "yyyy-MM-dd");
+
+  const logsCollectionRef = collection(db, `logs${todayDate}`);
   useEffect(() => {
     const getLogs = async () => {
       const data = await getDocs(logsCollectionRef);
@@ -232,8 +240,6 @@ function App() {
 
     getLogs();
   }, []);
-
-  const todayDate = format(new Date(2014, 1, 11), "yyyy-MM-dd");
 
   const menuClickHandler = (e) => {
     if (!e?.target) {
@@ -353,6 +359,14 @@ function App() {
     setOrder([]);
   };
 
+  const deleteLogClickHandler = async (id) => {
+    const docRef = doc(db, `logs${todayDate}`, id);
+    await deleteDoc(docRef);
+
+    const data = await getDocs(logsCollectionRef);
+    setLogs(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
+
   const menuButton = (menu) => {
     return (
       <__ButtonWrapper key={menu.id}>
@@ -404,7 +418,9 @@ function App() {
       <CssBaseline />
       {isLogsOpen ? (
         <__Container style={{ overflow: "hidden", height: "100vh" }}>
-          <__ButtonWrapper style={{ justifyContent: "center" }}>
+          <__ButtonWrapper
+            style={{ display: "flex", justifyContent: "flex-start" }}
+          >
             <__MenuButton
               type="button"
               $bColor="#2e3237"
@@ -418,9 +434,9 @@ function App() {
               <div
                 style={{
                   justifyContent: "center",
-                  color: "#fff",
+                  color: "#2e3237",
                   pointerEvents: "none",
-                  backgroundColor: "#ed7777",
+                  backgroundColor: "#f3e5f5",
                   padding: "0 10px",
                   borderRadius: "5px",
                 }}
@@ -440,17 +456,24 @@ function App() {
                 <__LogItem style={{ fontWeight: "600" }}>Cash</__LogItem>
                 <__LogItem style={{ fontWeight: "600" }}>Coupon</__LogItem>
                 <__LogItem style={{ fontWeight: "600" }}>Change</__LogItem>
+                <__LogItem style={{ fontWeight: "600" }}>ACTION</__LogItem>
               </div>
               {!!todayLogs.length ? (
                 todayLogs.map((log, idx) => (
                   <div key={log.id} style={{ width: "100%", display: "flex" }}>
                     <__LogItem>{idx + 1}</__LogItem>
                     <__LogItem>{log.totalQty}</__LogItem>
-                    <__LogItem>{log.totalPrice}</__LogItem>
-                    <__LogItem>{log.totalPaid}</__LogItem>
-                    <__LogItem>{log.totalCashPaid}</__LogItem>
-                    <__LogItem>{log.totalCouponPaid}</__LogItem>
-                    <__LogItem>{log.totalChange}</__LogItem>
+                    <__LogItem>{log.totalPrice.toFixed(1)}</__LogItem>
+                    <__LogItem>{log.totalPaid.toFixed(1)}</__LogItem>
+                    <__LogItem>{log.totalCashPaid.toFixed(1)}</__LogItem>
+                    <__LogItem>{log.totalCouponPaid.toFixed(1)}</__LogItem>
+                    <__LogItem>{log.totalChange.toFixed(1)}</__LogItem>
+                    <__LogItem
+                      onClick={() => deleteLogClickHandler(log.id)}
+                      style={{ fontWeight: "600", color: "#ed7777" }}
+                    >
+                      DELETE
+                    </__LogItem>
                   </div>
                 ))
               ) : (
@@ -466,9 +489,13 @@ function App() {
               )}
             </__CardContent>
           </__Card>
-          <__Card style={{ marginTop: "0", overflow: "auto" }}>
+          <__Card style={{ marginTop: "0" }}>
             <__CardContent
-              style={{ display: "flex", justifyContent: "space-around" }}
+              style={{
+                display: "flex",
+                justifyContent: "space-around",
+                marginBottom: "0.5rem",
+              }}
             >
               <span style={{ fontSize: "1.5rem", fontWeight: "600" }}>
                 {`Net Sales: $ ${todayTotalPrice}`}
