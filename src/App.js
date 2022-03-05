@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { db } from "./firebase-config";
 import { collection, getDocs, addDoc } from "firebase/firestore";
 import { format } from "date-fns";
-import { v4 as uuidv4 } from "uuid";
 
 import { Button, ButtonGroup, Box, Card, CardContent } from "@mui/material";
 
@@ -365,7 +364,7 @@ function App() {
     );
   };
 
-  const todayLogs = logs.filter((log) => log.date === todayDate);
+  const todayLogs = logs.filter((log) => log.date === todayDate).reverse();
 
   return (
     <Fragment>
