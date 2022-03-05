@@ -335,6 +335,7 @@ function App() {
       order: order,
       paid: paid,
       date: todayDate,
+      dateNow: Date.now(),
       totalQty: parseFloat(totalQty),
       totalPrice: parseFloat(totalPrice),
       totalPaid: parseFloat(totalPaid),
@@ -388,7 +389,9 @@ function App() {
     );
   };
 
-  const todayLogs = logs.filter((log) => log.date === todayDate).reverse();
+  const todayLogs = logs
+    .filter((log) => log.date === todayDate)
+    .sort((a, b) => a.dateNow - b.dateNow);
 
   const todayTotalPrice = sumProp(todayLogs, "totalPrice").toFixed(1);
   const todayTotalCoupon = sumProp(todayLogs, "totalCouponPaid").toFixed(1);
