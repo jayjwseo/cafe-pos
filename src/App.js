@@ -533,16 +533,7 @@ function App() {
             </__CardContent>
           </__Card>
           <div style={{ display: "flex" }}>
-            <__Card style={{ marginTop: "0", flex: "1" }}>
-              <__CardContent>
-                <__Box>
-                  <__ButtonGroup orientation="vertical">
-                    {cashTypes.map((cashType) => cashButton(cashType))}
-                  </__ButtonGroup>
-                </__Box>
-              </__CardContent>
-            </__Card>
-            <__Card style={{ marginTop: "0", marginLeft: "0", flex: "3" }}>
+            <__Card style={{ marginTop: "0", flex: "3" }}>
               <__CardContent
                 style={{
                   height: "100%",
@@ -648,6 +639,15 @@ function App() {
                     </__TotalInnerBox>
                   </__TotalBox>
                 </div>
+              </__CardContent>
+            </__Card>
+            <__Card style={{ marginTop: "0", marginLeft: "0", flex: "1" }}>
+              <__CardContent>
+                <__Box>
+                  <__ButtonGroup orientation="vertical">
+                    {cashTypes.map((cashType) => cashButton(cashType))}
+                  </__ButtonGroup>
+                </__Box>
               </__CardContent>
             </__Card>
           </div>
