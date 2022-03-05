@@ -1,7 +1,9 @@
 /* eslint-disable react/jsx-pascal-case */
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import styled from "styled-components";
+import { db } from "./firebase-config";
+import { collection, getDocs } from "firebase/firestore";
 
 import { Button, ButtonGroup, Box, Card, CardContent } from "@mui/material";
 
@@ -162,8 +164,8 @@ const cashTypes = [
   { label: "$ 1", amount: 1 },
   { label: "$ 0.5", amount: 0.5 },
   { label: "$ 0.2", amount: 0.2 },
-  { label: "$ 3.5 Coupon", amount: 3.5 },
-  { label: "$ 2.5 Coupon", amount: 2.5 },
+  { label: "$ 3.5 CP", amount: 3.5 },
+  { label: "$ 2.5 CP", amount: 2.5 },
 ];
 
 const productRow = (product) => {
@@ -212,6 +214,19 @@ const sumProp = (arr, key) => arr.reduce((a, b) => a + (b[key] || 0), 0);
 function App() {
   const [order, setOrder] = useState([]);
   const [paid, setPaid] = useState([]);
+  const [smallCouponPaidCount, setSmallCouponPaidCount] = useState(0);
+  const [bigCouponPaidCount, setBigCouponPaidCount] = useState(0);
+  const [logs, setLogs] = useState([]);
+
+  const logsCollectionRef = collection(db, "logs");
+  useEffect(() => {
+    const getLogs = async () => {
+      const data = await getDocs(logsCollectionRef);
+      setLogs(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+
+    getLogs();
+  }, []);
 
   const menuClickHandler = (e) => {
     if (!e?.target) {
@@ -243,12 +258,47 @@ function App() {
       return;
     }
 
-    const amount = e.target.value;
-    const cashType = cashTypes.find(
-      (type) => type.amount === parseFloat(amount)
-    );
+    const amount = parseFloat(e.target.value);
+    const cashType = cashTypes.find((type) => type.amount === amount);
+
+    if (amount === 2.5) {
+      setSmallCouponPaidCount(smallCouponPaidCount + 1);
+    }
+
+    if (amount === 3.5) {
+      setBigCouponPaidCount(bigCouponPaidCount + 1);
+    }
 
     setPaid([...paid, cashType]);
+  };
+
+  const clearOrderClickHandler = (e) => {
+    if (!e?.target) {
+      return;
+    }
+
+    setOrder([]);
+  };
+
+  const clearPaidClickHandler = (e) => {
+    if (!e?.target) {
+      return;
+    }
+
+    setSmallCouponPaidCount(0);
+    setBigCouponPaidCount(0);
+    setPaid([]);
+  };
+
+  const doneClickHandler = (e) => {
+    if (!e?.target) {
+      return;
+    }
+
+    setSmallCouponPaidCount(0);
+    setBigCouponPaidCount(0);
+    setPaid([]);
+    setOrder([]);
   };
 
   const totalQty = sumProp(order, "qty");
@@ -285,7 +335,11 @@ function App() {
           $bColor="#e6e6e6"
           onClick={cashClickHandler}
         >
-          <div style={{ pointerEvents: "none" }}>{cashType.label}</div>
+          <div style={{ pointerEvents: "none" }}>{`${cashType.label} ${
+            cashType.label === "$ 2.5 CP" ? `(${smallCouponPaidCount})` : ""
+          } ${
+            cashType.label === "$ 3.5 CP" ? `(${bigCouponPaidCount})` : ""
+          }`}</div>
         </__MenuButton>
       </__ButtonWrapper>
     );
@@ -441,24 +495,56 @@ function App() {
               style={{ flexGrow: "1", justifyContent: "center" }}
             >
               <__MenuButton type="button" $bColor="#2e3237">
-                <div style={{ justifyContent: "center", color: "#fff" }}>
+                <div
+                  style={{
+                    justifyContent: "center",
+                    color: "#fff",
+                    pointerEvents: "none",
+                  }}
+                >
                   Logs
                 </div>
               </__MenuButton>
             </__ButtonWrapper>
             <__ButtonWrapper style={{ flexGrow: "1" }}>
-              <__MenuButton type="button" $bColor="#f3e5f5">
-                <div style={{ justifyContent: "center" }}>Clear Order</div>
+              <__MenuButton
+                type="button"
+                $bColor="#f3e5f5"
+                onClick={clearOrderClickHandler}
+              >
+                <div
+                  style={{ justifyContent: "center", pointerEvents: "none" }}
+                >
+                  Clear Order
+                </div>
               </__MenuButton>
             </__ButtonWrapper>
             <__ButtonWrapper style={{ flexGrow: "1" }}>
-              <__MenuButton type="button" $bColor="#f3e5f5">
-                <div style={{ justifyContent: "center" }}>Clear Paid</div>
+              <__MenuButton
+                type="button"
+                $bColor="#f3e5f5"
+                onClick={clearPaidClickHandler}
+              >
+                <div
+                  style={{ justifyContent: "center", pointerEvents: "none" }}
+                >
+                  Clear Paid
+                </div>
               </__MenuButton>
             </__ButtonWrapper>
             <__ButtonWrapper style={{ flexGrow: "6" }}>
-              <__MenuButton type="button" $bColor="#2e3237">
-                <div style={{ justifyContent: "center", color: "#fff" }}>
+              <__MenuButton
+                type="button"
+                $bColor="#2e3237"
+                onClick={doneClickHandler}
+              >
+                <div
+                  style={{
+                    justifyContent: "center",
+                    color: "#fff",
+                    pointerEvents: "none",
+                  }}
+                >
                   Done
                 </div>
               </__MenuButton>
