@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { db } from "./firebase-config";
 import { collection, getDocs, addDoc } from "firebase/firestore";
 import { format } from "date-fns";
+import { v4 as uuidv4 } from "uuid";
 
 import { Button, ButtonGroup, Box, Card, CardContent } from "@mui/material";
 
@@ -177,6 +178,7 @@ const productRow = (product) => {
         display: "flex",
         justifyContent: "space-between",
       }}
+      key={product.id}
     >
       <__ItemText
         style={{
@@ -219,6 +221,7 @@ function App() {
   const [smallCouponPaidCount, setSmallCouponPaidCount] = useState(0);
   const [bigCouponPaidCount, setBigCouponPaidCount] = useState(0);
   const [logs, setLogs] = useState([]);
+  const [isLogsOpen, setIsLogsOpen] = useState(false);
 
   const logsCollectionRef = collection(db, "logs");
   useEffect(() => {
@@ -300,6 +303,14 @@ function App() {
     setOrder([]);
   };
 
+  const logsClickHandler = () => {
+    setIsLogsOpen(true);
+  };
+
+  const closeLogsClickHandler = () => {
+    setIsLogsOpen(false);
+  };
+
   const clearPaidClickHandler = (e) => {
     if (!e?.target) {
       return;
@@ -354,213 +365,263 @@ function App() {
     );
   };
 
+  const todayLogs = logs.filter((log) => log.date === todayDate);
+
   return (
     <Fragment>
       <CssBaseline />
-      <__Container style={{ overflow: "hidden" }}>
-        <__Card>
-          <__CardContent>
-            <__Box>
-              <__ButtonGroup orientation="vertical">
-                {menuItems
-                  .filter((i) => i.type === "hot")
-                  .map((hotDrink) => menuButton(hotDrink))}
-              </__ButtonGroup>
-              <__ButtonGroup orientation="vertical">
-                {menuItems
-                  .filter((i) => i.type === "cold")
-                  .map((coldDrink) => menuButton(coldDrink))}
-              </__ButtonGroup>
-              <div style={{ display: "flex", width: "100%" }}>
-                {menuItems
-                  .filter((i) => i.type === "other")
-                  .map((other) => menuButton(other))}
+      {isLogsOpen ? (
+        <__Container style={{ overflow: "hidden", height: "100vh" }}>
+          <__ButtonWrapper style={{ justifyContent: "center" }}>
+            <__MenuButton
+              type="button"
+              $bColor="#2e3237"
+              onClick={closeLogsClickHandler}
+              style={{
+                width: "auto",
+                margin: "16px",
+                padding: "0",
+              }}
+            >
+              <div
+                style={{
+                  justifyContent: "center",
+                  color: "#fff",
+                  pointerEvents: "none",
+                  backgroundColor: "#ed7777",
+                  padding: "0 10px",
+                  borderRadius: "5px",
+                }}
+              >
+                Close Logs
               </div>
-            </__Box>
-          </__CardContent>
-        </__Card>
-        <div style={{ display: "flex" }}>
-          <__Card style={{ marginTop: "0", flex: "1" }}>
+            </__MenuButton>
+          </__ButtonWrapper>
+
+          <__Card style={{ marginTop: "0", height: "100%", overflow: "auto" }}>
+            <__CardContent style={{ display: "flex", fontSize: "16px" }}>
+              {!!todayLogs.length ? (
+                todayLogs.map((log) => (
+                  <div key={log.id}>
+                    {log.id} {console.log(log)}
+                  </div>
+                ))
+              ) : (
+                <div>No sales today :(</div>
+              )}
+            </__CardContent>
+          </__Card>
+        </__Container>
+      ) : (
+        <__Container style={{ overflow: "hidden" }}>
+          <__Card>
             <__CardContent>
               <__Box>
                 <__ButtonGroup orientation="vertical">
-                  {cashTypes.map((cashType) => cashButton(cashType))}
+                  {menuItems
+                    .filter((i) => i.type === "hot")
+                    .map((hotDrink) => menuButton(hotDrink))}
                 </__ButtonGroup>
+                <__ButtonGroup orientation="vertical">
+                  {menuItems
+                    .filter((i) => i.type === "cold")
+                    .map((coldDrink) => menuButton(coldDrink))}
+                </__ButtonGroup>
+                <div style={{ display: "flex", width: "100%" }}>
+                  {menuItems
+                    .filter((i) => i.type === "other")
+                    .map((other) => menuButton(other))}
+                </div>
               </__Box>
             </__CardContent>
           </__Card>
-          <__Card style={{ marginTop: "0", marginLeft: "0", flex: "3" }}>
-            <__CardContent
-              style={{
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <__Container style={{ height: "70%" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    borderBottom: "1px solid #2e3237",
-                    padding: "0.5rem",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <__ItemText style={{ width: "50%", paddingLeft: "1rem" }}>
-                    Qty
-                  </__ItemText>
-                  <__ItemText style={{ width: "100%", paddingLeft: "1rem" }}>
-                    Item
-                  </__ItemText>
-                  <__ItemText style={{ width: "50%", paddingLeft: "1.5rem" }}>
-                    Price ($)
-                  </__ItemText>
-                </div>
-                {order.map((product) => productRow(product))}
-              </__Container>
-              <div
+          <div style={{ display: "flex" }}>
+            <__Card style={{ marginTop: "0", flex: "1" }}>
+              <__CardContent>
+                <__Box>
+                  <__ButtonGroup orientation="vertical">
+                    {cashTypes.map((cashType) => cashButton(cashType))}
+                  </__ButtonGroup>
+                </__Box>
+              </__CardContent>
+            </__Card>
+            <__Card style={{ marginTop: "0", marginLeft: "0", flex: "3" }}>
+              <__CardContent
                 style={{
-                  height: "100px",
+                  height: "100%",
                   display: "flex",
+                  flexDirection: "column",
                   justifyContent: "space-between",
                 }}
               >
-                <__TotalBox>
-                  <__TotalInnerBox
+                <__Container style={{ height: "70%" }}>
+                  <div
                     style={{
-                      background: "#9c9c9c",
+                      display: "flex",
+                      borderBottom: "1px solid #2e3237",
+                      padding: "0.5rem",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <__ItemText style={{ width: "50%", paddingLeft: "1rem" }}>
+                      Qty
+                    </__ItemText>
+                    <__ItemText style={{ width: "100%", paddingLeft: "1rem" }}>
+                      Item
+                    </__ItemText>
+                    <__ItemText style={{ width: "50%", paddingLeft: "1.5rem" }}>
+                      Price ($)
+                    </__ItemText>
+                  </div>
+                  {order.map((product) => productRow(product))}
+                </__Container>
+                <div
+                  style={{
+                    height: "100px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <__TotalBox>
+                    <__TotalInnerBox
+                      style={{
+                        background: "#9c9c9c",
+                        color: "#fff",
+                      }}
+                    >
+                      Qty
+                    </__TotalInnerBox>
+                    <__TotalInnerBox
+                      style={{
+                        color: "#9c9c9c",
+                      }}
+                    >
+                      {totalQty}
+                    </__TotalInnerBox>
+                  </__TotalBox>
+                  <__TotalBox>
+                    <__TotalInnerBox
+                      style={{
+                        background: "#ed7777",
+                        color: "#fff",
+                      }}
+                    >
+                      Total
+                    </__TotalInnerBox>
+                    <__TotalInnerBox
+                      style={{
+                        color: "#ed7777",
+                      }}
+                    >
+                      {totalPrice}
+                    </__TotalInnerBox>
+                  </__TotalBox>
+                  <__TotalBox>
+                    <__TotalInnerBox
+                      style={{
+                        background: "#00BFA5",
+                        color: "#fff",
+                      }}
+                    >
+                      Paid
+                    </__TotalInnerBox>
+                    <__TotalInnerBox
+                      style={{
+                        color: "#00BFA5",
+                      }}
+                    >
+                      {totalPaid}
+                    </__TotalInnerBox>
+                  </__TotalBox>
+                  <__TotalBox>
+                    <__TotalInnerBox
+                      style={{
+                        background: "#607D8B",
+                        color: "#fff",
+                      }}
+                    >
+                      Change
+                    </__TotalInnerBox>
+                    <__TotalInnerBox
+                      style={{
+                        color: "#607D8B",
+                      }}
+                    >
+                      {totalChange}
+                    </__TotalInnerBox>
+                  </__TotalBox>
+                </div>
+              </__CardContent>
+            </__Card>
+          </div>
+          <__Card style={{ marginTop: "0" }}>
+            <__CardContent style={{ display: "flex" }}>
+              <__ButtonWrapper
+                style={{ flexGrow: "1", justifyContent: "center" }}
+              >
+                <__MenuButton
+                  type="button"
+                  $bColor="#2e3237"
+                  onClick={logsClickHandler}
+                >
+                  <div
+                    style={{
+                      justifyContent: "center",
                       color: "#fff",
+                      pointerEvents: "none",
                     }}
                   >
-                    Qty
-                  </__TotalInnerBox>
-                  <__TotalInnerBox
-                    style={{
-                      color: "#9c9c9c",
-                    }}
+                    Logs
+                  </div>
+                </__MenuButton>
+              </__ButtonWrapper>
+              <__ButtonWrapper style={{ flexGrow: "1" }}>
+                <__MenuButton
+                  type="button"
+                  $bColor="#f3e5f5"
+                  onClick={clearOrderClickHandler}
+                >
+                  <div
+                    style={{ justifyContent: "center", pointerEvents: "none" }}
                   >
-                    {totalQty}
-                  </__TotalInnerBox>
-                </__TotalBox>
-                <__TotalBox>
-                  <__TotalInnerBox
+                    Clear Order
+                  </div>
+                </__MenuButton>
+              </__ButtonWrapper>
+              <__ButtonWrapper style={{ flexGrow: "1" }}>
+                <__MenuButton
+                  type="button"
+                  $bColor="#f3e5f5"
+                  onClick={clearPaidClickHandler}
+                >
+                  <div
+                    style={{ justifyContent: "center", pointerEvents: "none" }}
+                  >
+                    Clear Paid
+                  </div>
+                </__MenuButton>
+              </__ButtonWrapper>
+              <__ButtonWrapper style={{ flexGrow: "6" }}>
+                <__MenuButton
+                  type="button"
+                  $bColor="#2e3237"
+                  onClick={doneClickHandler}
+                >
+                  <div
                     style={{
-                      background: "#ed7777",
+                      justifyContent: "center",
                       color: "#fff",
+                      pointerEvents: "none",
                     }}
                   >
-                    Total
-                  </__TotalInnerBox>
-                  <__TotalInnerBox
-                    style={{
-                      color: "#ed7777",
-                    }}
-                  >
-                    {totalPrice}
-                  </__TotalInnerBox>
-                </__TotalBox>
-                <__TotalBox>
-                  <__TotalInnerBox
-                    style={{
-                      background: "#00BFA5",
-                      color: "#fff",
-                    }}
-                  >
-                    Paid
-                  </__TotalInnerBox>
-                  <__TotalInnerBox
-                    style={{
-                      color: "#00BFA5",
-                    }}
-                  >
-                    {totalPaid}
-                  </__TotalInnerBox>
-                </__TotalBox>
-                <__TotalBox>
-                  <__TotalInnerBox
-                    style={{
-                      background: "#607D8B",
-                      color: "#fff",
-                    }}
-                  >
-                    Change
-                  </__TotalInnerBox>
-                  <__TotalInnerBox
-                    style={{
-                      color: "#607D8B",
-                    }}
-                  >
-                    {totalChange}
-                  </__TotalInnerBox>
-                </__TotalBox>
-              </div>
+                    Done
+                  </div>
+                </__MenuButton>
+              </__ButtonWrapper>
             </__CardContent>
           </__Card>
-        </div>
-        <__Card style={{ marginTop: "0" }}>
-          <__CardContent style={{ display: "flex" }}>
-            <__ButtonWrapper
-              style={{ flexGrow: "1", justifyContent: "center" }}
-            >
-              <__MenuButton type="button" $bColor="#2e3237">
-                <div
-                  style={{
-                    justifyContent: "center",
-                    color: "#fff",
-                    pointerEvents: "none",
-                  }}
-                >
-                  Logs
-                </div>
-              </__MenuButton>
-            </__ButtonWrapper>
-            <__ButtonWrapper style={{ flexGrow: "1" }}>
-              <__MenuButton
-                type="button"
-                $bColor="#f3e5f5"
-                onClick={clearOrderClickHandler}
-              >
-                <div
-                  style={{ justifyContent: "center", pointerEvents: "none" }}
-                >
-                  Clear Order
-                </div>
-              </__MenuButton>
-            </__ButtonWrapper>
-            <__ButtonWrapper style={{ flexGrow: "1" }}>
-              <__MenuButton
-                type="button"
-                $bColor="#f3e5f5"
-                onClick={clearPaidClickHandler}
-              >
-                <div
-                  style={{ justifyContent: "center", pointerEvents: "none" }}
-                >
-                  Clear Paid
-                </div>
-              </__MenuButton>
-            </__ButtonWrapper>
-            <__ButtonWrapper style={{ flexGrow: "6" }}>
-              <__MenuButton
-                type="button"
-                $bColor="#2e3237"
-                onClick={doneClickHandler}
-              >
-                <div
-                  style={{
-                    justifyContent: "center",
-                    color: "#fff",
-                    pointerEvents: "none",
-                  }}
-                >
-                  Done
-                </div>
-              </__MenuButton>
-            </__ButtonWrapper>
-          </__CardContent>
-        </__Card>
-      </__Container>
+        </__Container>
+      )}
     </Fragment>
   );
 }
