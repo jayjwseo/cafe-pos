@@ -11,121 +11,145 @@ const menuItems = [
     type: "hot",
     name: "Latte",
     value: "latte",
-    price: "2.5",
+    price: 2.5,
+    qty: 1,
   },
   {
     id: "hd2",
     type: "hot",
     name: "Cappuccino",
     value: "cappuccino",
-    price: "2.5",
+    price: 2.5,
+    qty: 1,
   },
   {
     id: "hd3",
     type: "hot",
     name: "Long Black",
     value: "longBlack",
-    price: "2.5",
+    price: 2.5,
+    qty: 1,
   },
   {
     id: "hd4",
     type: "hot",
     name: "Short Black",
     value: "shortBlack",
-    price: "2.5",
+    price: 2.5,
+    qty: 1,
   },
   {
     id: "hd5",
     type: "hot",
     name: "Flat White",
     value: "flatWhite",
-    price: "2.5",
+    price: 2.5,
+    qty: 1,
   },
-  { id: "hd6", type: "hot", name: "Mocha", value: "mocha", price: "3.5" },
+  {
+    id: "hd6",
+    type: "hot",
+    name: "Mocha",
+    value: "mocha",
+    price: 3.5,
+    qty: 1,
+  },
   {
     id: "hd7",
     type: "hot",
     name: "Hot Chocolate",
     value: "hotChocolate",
-    price: "3.0",
+    price: 3.0,
+    qty: 1,
   },
-  { id: "hd8", type: "hot", name: "Tea", value: "tea", price: "2.5" },
+  { id: "hd8", type: "hot", name: "Tea", value: "tea", price: "2.5", qty: 1 },
   {
     id: "cd1",
     type: "cold",
     name: "Iced Latte",
     value: "icedLatte",
-    price: "4.0",
+    price: 4.0,
+    qty: 1,
   },
   {
     id: "cd2",
     type: "cold",
     name: "Iced Americano",
     value: "icedAmericano",
-    price: "4.0",
+    price: 4.0,
+    qty: 1,
   },
   {
     id: "cd3",
     type: "cold",
     name: "Iced Blue",
     value: "icedBlue",
-    price: "3.5",
+    price: 3.5,
+    qty: 1,
   },
   {
     id: "cd4",
     type: "cold",
     name: "Iced Mango",
     value: "icedMango",
-    price: "3.5",
+    price: 3.5,
+    qty: 1,
   },
   {
     id: "cd5",
     type: "cold",
     name: "Iced Watermelon",
     value: "icedWatermelon",
-    price: "3.5",
+    price: 3.5,
+    qty: 1,
   },
   {
     id: "cd6",
     type: "cold",
     name: "Iced Peach",
     value: "icedPeach",
-    price: "3.5",
+    price: 3.5,
+    qty: 1,
   },
   {
     id: "cd7",
     type: "cold",
     name: "Iced Chocolate",
     value: "icedChocolate",
-    price: "3.5",
+    price: 3.5,
+    qty: 1,
   },
   {
     id: "cd8",
     type: "cold",
     name: "Iced Mocha",
     value: "icedMocha",
-    price: "4.5",
+    price: 4.5,
+    qty: 1,
   },
   {
     id: "other1",
     type: "other",
     name: "Extra",
     value: "icedMocha",
-    price: "0.5",
+    price: 0.5,
+    qty: 1,
   },
   {
     id: "other2",
     type: "other",
     name: "Coupon 25",
     value: "cp25",
-    price: "25.0",
+    price: 25.0,
+    qty: 1,
   },
   {
     id: "other3",
     type: "other",
     name: "Coupon 35",
     value: "cp35",
-    price: "35.0",
+    price: 35.0,
+    qty: 1,
   },
 ];
 
@@ -158,7 +182,7 @@ const productRow = (product) => {
           borderRight: "1px solid #2e3237",
         }}
       >
-        2
+        {product.qty}
       </__ItemText>
       <__ItemText
         style={{
@@ -168,7 +192,7 @@ const productRow = (product) => {
           borderRight: "1px solid #2e3237",
         }}
       >
-        Americano
+        {product.name}
       </__ItemText>
       <__ItemText
         style={{
@@ -177,32 +201,73 @@ const productRow = (product) => {
           borderBottom: "1px solid #2e3237",
         }}
       >
-        32
+        {product.price}
       </__ItemText>
     </div>
   );
 };
 
+const sumProp = (arr, key) => arr.reduce((a, b) => a + (b[key] || 0), 0);
+
 function App() {
   const [order, setOrder] = useState([]);
-  const [paid, setPaid] = useState(0);
+  const [paid, setPaid] = useState([]);
 
   const menuClickHandler = (e) => {
-    if (!e) {
+    if (!e?.target) {
       return;
     }
+
+    const value = e.target.value;
+    const menuItem = [menuItems.find((item) => item.value === value)];
+
+    const result = Object.values(
+      [...order, ...menuItem].reduce((acc, { id, type, name, price, qty }) => {
+        acc[id] = {
+          id,
+          type,
+          name,
+          value,
+          price: (acc[id] ? acc[id].price : 0) + price,
+          qty: (acc[id] ? acc[id].qty : 0) + qty,
+        };
+        return acc;
+      }, {})
+    );
+
+    setOrder(result);
   };
+
+  const cashClickHandler = (e) => {
+    if (!e?.target) {
+      return;
+    }
+
+    const amount = e.target.value;
+    const cashType = cashTypes.find(
+      (type) => type.amount === parseFloat(amount)
+    );
+
+    setPaid([...paid, cashType]);
+  };
+
+  const totalQty = sumProp(order, "qty");
+
+  const totalPrice = sumProp(order, "price").toFixed(1);
+
+  const totalPaid = sumProp(paid, "amount").toFixed(1);
+
+  const totalChange = Math.max(0, totalPaid - totalPrice).toFixed(1);
 
   const menuButton = (menu) => {
     return (
-      <__ButtonWrapper>
+      <__ButtonWrapper key={menu.id}>
         <__MenuButton
           type="button"
           value={menu.value}
-          key={menu.id}
           onClick={menuClickHandler}
         >
-          <div>
+          <div style={{ pointerEvents: "none" }}>
             <span>{menu.name}</span>
             <span>{menu.price}</span>
           </div>
@@ -213,14 +278,14 @@ function App() {
 
   const cashButton = (cashType) => {
     return (
-      <__ButtonWrapper>
+      <__ButtonWrapper key={cashType.label}>
         <__MenuButton
           type="button"
           value={cashType.amount}
-          key={cashType.label}
-          $bColor="#E0E0E0"
+          $bColor="#e6e6e6"
+          onClick={cashClickHandler}
         >
-          <div>{cashType.label}</div>
+          <div style={{ pointerEvents: "none" }}>{cashType.label}</div>
         </__MenuButton>
       </__ButtonWrapper>
     );
@@ -252,7 +317,7 @@ function App() {
           </__CardContent>
         </__Card>
         <div style={{ display: "flex" }}>
-          <__Card style={{ marginTop: "0", flexGrow: "1" }}>
+          <__Card style={{ marginTop: "0", flex: "1" }}>
             <__CardContent>
               <__Box>
                 <__ButtonGroup orientation="vertical">
@@ -261,7 +326,7 @@ function App() {
               </__Box>
             </__CardContent>
           </__Card>
-          <__Card style={{ marginTop: "0", marginLeft: "0", flexGrow: "10" }}>
+          <__Card style={{ marginTop: "0", marginLeft: "0", flex: "3" }}>
             <__CardContent
               style={{
                 height: "100%",
@@ -289,8 +354,7 @@ function App() {
                     Price ($)
                   </__ItemText>
                 </div>
-                {productRow()}
-                {productRow()}
+                {order.map((product) => productRow(product))}
               </__Container>
               <div
                 style={{
@@ -313,7 +377,7 @@ function App() {
                       color: "#9c9c9c",
                     }}
                   >
-                    6534
+                    {totalQty}
                   </__TotalInnerBox>
                 </__TotalBox>
                 <__TotalBox>
@@ -330,7 +394,7 @@ function App() {
                       color: "#ed7777",
                     }}
                   >
-                    6534
+                    {totalPrice}
                   </__TotalInnerBox>
                 </__TotalBox>
                 <__TotalBox>
@@ -347,7 +411,7 @@ function App() {
                       color: "#00BFA5",
                     }}
                   >
-                    543
+                    {totalPaid}
                   </__TotalInnerBox>
                 </__TotalBox>
                 <__TotalBox>
@@ -364,7 +428,7 @@ function App() {
                       color: "#607D8B",
                     }}
                   >
-                    543
+                    {totalChange}
                   </__TotalInnerBox>
                 </__TotalBox>
               </div>
@@ -435,7 +499,6 @@ const __MenuButton = styled(Button)`
   text-align: left;
   width: 100%;
   height: 45px;
-  /* border: 1px solid #2e3237 !important; */
   border: none !important;
 
   background-color: ${(p) =>
