@@ -20,7 +20,7 @@ const menuItems = [
     type: "hot",
     name: "Latte",
     value: "latte",
-    price: 2.5,
+    price: 3.0,
     qty: 1,
   },
   {
@@ -28,7 +28,7 @@ const menuItems = [
     type: "hot",
     name: "Cappuccino",
     value: "cappuccino",
-    price: 2.5,
+    price: 3.0,
     qty: 1,
   },
   {
@@ -36,7 +36,7 @@ const menuItems = [
     type: "hot",
     name: "Long Black",
     value: "longBlack",
-    price: 2.5,
+    price: 3.0,
     qty: 1,
   },
   {
@@ -44,7 +44,7 @@ const menuItems = [
     type: "hot",
     name: "Short Black",
     value: "shortBlack",
-    price: 2.5,
+    price: 3.0,
     qty: 1,
   },
   {
@@ -52,7 +52,7 @@ const menuItems = [
     type: "hot",
     name: "Flat White",
     value: "flatWhite",
-    price: 2.5,
+    price: 3.0,
     qty: 1,
   },
   {
@@ -60,7 +60,7 @@ const menuItems = [
     type: "hot",
     name: "Mocha",
     value: "mocha",
-    price: 3.5,
+    price: 4.0,
     qty: 1,
   },
   {
@@ -68,16 +68,16 @@ const menuItems = [
     type: "hot",
     name: "Hot Chocolate",
     value: "hotChocolate",
-    price: 3.0,
+    price: 3.5,
     qty: 1,
   },
-  { id: "hd8", type: "hot", name: "Tea", value: "tea", price: 2.5, qty: 1 },
+  { id: "hd8", type: "hot", name: "Tea", value: "tea", price: 3.0, qty: 1 },
   {
     id: "cd1",
     type: "cold",
     name: "Iced Latte",
     value: "icedLatte",
-    price: 4.0,
+    price: 4.5,
     qty: 1,
   },
   {
@@ -85,7 +85,7 @@ const menuItems = [
     type: "cold",
     name: "Iced Americano",
     value: "icedAmericano",
-    price: 4.0,
+    price: 4.5,
     qty: 1,
   },
   {
@@ -93,7 +93,7 @@ const menuItems = [
     type: "cold",
     name: "Iced Blue",
     value: "icedBlue",
-    price: 3.5,
+    price: 4.0,
     qty: 1,
   },
   {
@@ -101,7 +101,7 @@ const menuItems = [
     type: "cold",
     name: "Iced Mango",
     value: "icedMango",
-    price: 3.5,
+    price: 4.0,
     qty: 1,
   },
   {
@@ -109,7 +109,7 @@ const menuItems = [
     type: "cold",
     name: "Iced Watermelon",
     value: "icedWatermelon",
-    price: 3.5,
+    price: 4.0,
     qty: 1,
   },
   {
@@ -117,7 +117,7 @@ const menuItems = [
     type: "cold",
     name: "Iced Peach",
     value: "icedPeach",
-    price: 3.5,
+    price: 4.0,
     qty: 1,
   },
   {
@@ -125,7 +125,7 @@ const menuItems = [
     type: "cold",
     name: "Iced Chocolate",
     value: "icedChocolate",
-    price: 3.5,
+    price: 4.0,
     qty: 1,
   },
   {
@@ -133,7 +133,7 @@ const menuItems = [
     type: "cold",
     name: "Iced Mocha",
     value: "icedMocha",
-    price: 4.5,
+    price: 5.0,
     qty: 1,
   },
   {
@@ -484,7 +484,7 @@ function App() {
                     fontSize: "1.5rem",
                   }}
                 >
-                  gg no sales today :(
+                  Empty
                 </div>
               )}
             </__CardContent>
